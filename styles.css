@@ -17,6 +17,9 @@ body {
 }
 
 video {
-  width: 100%;  /* Make the video take up the full width of the screen */
-  height: auto; /* Maintain aspect ratio */
+  width: auto;         
+  max-width: 100%;     
+  height: 60vh;        
+  margin: 0 auto;      
+  display: block;    
 }
