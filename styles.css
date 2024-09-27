@@ -1,12 +1,6 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  margin: 0;
-  padding: 10px;        
-  height: 100vh;        
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
 .pink-button {
