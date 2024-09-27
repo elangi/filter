@@ -20,14 +20,21 @@
         let filterActive = false;
 
         // Accessing the camera
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-                startFaceFilter();
-            })
-            .catch(err => {
-                console.error("Error accessing the camera: ", err);
-            });
+        navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: { exact: "user" }, // Use the front camera
+                width: { ideal: 1280 }, // Set ideal width
+                height: { ideal: 720 } // Set ideal height
+            }
+        })
+        .then(stream => {
+            video.srcObject = stream;
+            startFaceFilter();
+        })
+        .catch(err => {
+            console.error("Error accessing the camera: ", err);
+        });
+
 
         function startFaceFilter() {
             // Initialize the face filter
