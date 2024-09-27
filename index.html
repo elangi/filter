@@ -3,32 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera Access</title>
+    <title>Camera Access with Filter</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/gh/jeeliz/jeelizFaceFilter@latest/dist/jeelizFaceFilter.js"></script>
 </head>
 <body>
-    <h1>Camera Access Page</h1>
+    <h1>Camera Access with Facial Enhancement</h1>
     <video id="video" width="320" height="240" autoplay></video>
-    <button id="capture" class="pink-button">Capture Photo</button>
+    <button id="toggleFilter" class="pink-button">Toggle Filter</button>
     <br>
     <a href="text.html">Go to Text Page</a>
 
     <script>
         const video = document.getElementById('video');
-        const captureButton = document.getElementById('capture');
+        const toggleButton = document.getElementById('toggleFilter');
+        let filterActive = false;
 
         // Accessing the camera
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => {
                 video.srcObject = stream;
+                startFaceFilter();
             })
             .catch(err => {
                 console.error("Error accessing the camera: ", err);
             });
 
-        captureButton.addEventListener('click', () => {
-            // Capture photo logic can go here (if needed)
-            alert("Photo captured!");
+        function startFaceFilter() {
+            // Initialize the face filter
+            JEEFACEFILTERAPI.init({
+                canvasId: 'video',
+                NNCpath: 'https://cdn.jsdelivr.net/gh/jeeliz/jeelizFaceFilter@latest/dist/',
+                callbackReady: function(errCode) {
+                    if (errCode) {
+                        console.error("Error initializing face filter: ", errCode);
+                        return;
+                    }
+                    console.log("Face filter initialized");
+                }
+            });
+        }
+
+        toggleButton.addEventListener('click', () => {
+            filterActive = !filterActive;
+            if (filterActive) {
+                // Apply the filter (you can customize this part)
+                JEEFACEFILTERAPI.start();
+                toggleButton.textContent = "Remove Filter";
+            } else {
+                // Remove the filter
+                JEEFACEFILTERAPI.stop();
+                toggleButton.textContent = "Toggle Filter";
+            }
         });
     </script>
 </body>
