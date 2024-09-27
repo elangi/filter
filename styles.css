@@ -15,3 +15,9 @@ body {
 .pink-button:hover {
   background-color: lightpink;
 }
+
+video {
+    width: 100%; /* Make the video take the full width */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Cover the area without distortion */
+}
