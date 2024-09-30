@@ -5,65 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera Access with Filter</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/gh/jeeliz/jeelizFaceFilter@latest/dist/jeelizFaceFilter.js"></script>
+    <!-- Include Face-api.js -->
+    <script defer src="https://unpkg.com/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script defer src="script.js"></script> <!-- Move your JS to an external file -->
 </head>
 <body>
     <h1>Filtered Face Installation</h1>
-    <video id="video" autoplay></video>
+    <div class="video-container">
+        <video id="video" autoplay muted></video>
+        <canvas id="overlay"></canvas>
+    </div>
     <button id="toggleFilter" class="pink-button">Toggle Filter</button>
     <br>
     <p>What is the filter doing to my face?</p>
     <a href="answer.html">Answer</a>
-
-    <script>
-        const video = document.getElementById('video');
-        const toggleButton = document.getElementById('toggleFilter');
-        let filterActive = false;
-
-        // Accessing the camera
-        navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: { exact: "user" }, // Use the front camera
-                width: { ideal: 1280 }, // Set ideal width
-                height: { ideal: 720 } // Set ideal height
-            }
-        })
-        .then(stream => {
-            video.srcObject = stream;
-            startFaceFilter();
-        })
-        .catch(err => {
-            console.error("Error accessing the camera: ", err);
-        });
-
-
-        function startFaceFilter() {
-            // Initialize the face filter
-            JEEFACEFILTERAPI.init({
-                canvasId: 'video',
-                NNCpath: 'https://cdn.jsdelivr.net/gh/jeeliz/jeelizFaceFilter@latest/dist/',
-                callbackReady: function(errCode) {
-                    if (errCode) {
-                        console.error("Error initializing face filter: ", errCode);
-                        return;
-                    }
-                    console.log("Face filter initialized");
-                }
-            });
-        }
-
-        toggleButton.addEventListener('click', () => {
-            filterActive = !filterActive;
-            if (filterActive) {
-                // Apply the filter (you can customize this part)
-                JEEFACEFILTERAPI.start();
-                toggleButton.textContent = "Remove Filter";
-            } else {
-                // Remove the filter
-                JEEFACEFILTERAPI.stop();
-                toggleButton.textContent = "Toggle Filter";
-            }
-        });
-    </script>
 </body>
 </html>
