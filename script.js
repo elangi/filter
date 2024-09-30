@@ -1,28 +1,26 @@
-// script.js
-
 const video = document.getElementById('video');
-const canvas = document.getElementById('overlay');
+const overlay = document.getElementById('overlay');
 const toggleButton = document.getElementById('toggleFilter');
 let filterActive = false;
 
-// Load Face-api.js models
+// Load face-api.js models
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-    faceapi.nets.faceLandmark68TinyNet.loadFromUri('/models')
-]).then(startVideo).catch(err => {
-    console.error("Error loading Face-api.js models:", err);
-});
+    faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+    faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+]).then(startVideo);
 
 function startVideo() {
     navigator.mediaDevices.getUserMedia({
         video: {
-            facingMode: "user", // Front camera
+            facingMode: "user",
             width: { ideal: 1280 },
             height: { ideal: 720 }
         }
     })
     .then(stream => {
         video.srcObject = stream;
+        video.play();
     })
     .catch(err => {
         console.error("Error accessing the camera: ", err);
@@ -30,44 +28,50 @@ function startVideo() {
 }
 
 video.addEventListener('play', () => {
-    const displaySize = { width: video.videoWidth, height: video.videoHeight };
-    faceapi.matchDimensions(canvas, displaySize);
+    const displaySize = { width: video.width, height: video.height };
+    faceapi.matchDimensions(overlay, displaySize);
 
     setInterval(async () => {
-        if (!filterActive) {
-            // Clear canvas if filter is not active
-            const context = canvas.getContext('2d');
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            return;
-        }
+        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+            .withFaceLandmarks();
 
-        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(true);
         const resizedDetections = faceapi.resizeResults(detections, displaySize);
+        overlay.getContext('2d').clearRect(0, 0, overlay.width, overlay.height);
 
-        // Clear canvas before drawing
-        const context = canvas.getContext('2d');
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Apply filters
-        resizedDetections.forEach(detection => {
-            const landmarks = detection.landmarks;
-
-            // Example: Slim nose (this is a simplistic approach)
-            const nose = landmarks.getNose();
-            // Implement your nose slimming logic here
-
-            // Example: Enlarge lips
-            const mouth = landmarks.getMouth();
-            // Implement your lip enlarging logic here
-
-            // Example: Clear blemishes
-            // Implement your blemish removal logic here
-
-            // For demonstration, let's draw the landmarks
-            faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
-        });
+        if (filterActive) {
+            applyFilter(resizedDetections);
+        }
     }, 100);
 });
+
+function applyFilter(detections) {
+    detections.forEach(detection => {
+        const landmarks = detection.landmarks;
+        const ctx = overlay.getContext('2d');
+
+        // Slim the nose
+        const nose = landmarks.getNose();
+        ctx.beginPath();
+        ctx.moveTo(nose[0].x, nose[0].y);
+        ctx.lineTo(nose[3].x, nose[3].y);
+        ctx.strokeStyle = '#FFF';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Enlarge the lips
+        const mouth = landmarks.getMouth();
+        ctx.beginPath();
+        ctx.moveTo(mouth[0].x, mouth[0].y);
+        mouth.forEach(point => ctx.lineTo(point.x, point.y));
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+        ctx.fill();
+
+        // Clear blemishes (simplified)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.fillRect(detection.box.x, detection.box.y, detection.box.width, detection.box.height);
+    });
+}
 
 toggleButton.addEventListener('click', () => {
     filterActive = !filterActive;
