@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera Access with Filter</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Include Face-api.js -->
-    <script defer src="https://unpkg.com/face-api.js@0.22.2/dist/face-api.min.js"></script>
-    <script defer src="script.js"></script> <!-- Move your JS to an external file -->
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="script.js"></script>
 </head>
 <body>
     <h1>Filtered Face Installation</h1>
-    <div class="video-container">
+    <div id="video-container">
         <video id="video" autoplay muted></video>
         <canvas id="overlay"></canvas>
     </div>
@@ -19,5 +18,7 @@
     <br>
     <p>What is the filter doing to my face?</p>
     <a href="answer.html">Answer</a>
+
+
 </body>
 </html>
