@@ -41,7 +41,7 @@ body {
 .container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 40px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -69,19 +69,29 @@ p {
 
 ul {
   font-family: "Montserrat", sans-serif;
-  list-style-type: none;
-  padding: 0;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 ul li {
   font-size: 1.2em;
   margin-bottom: 10px;
+  text-align: left;
 }
 
 ul li strong {
-  font-family: "Playfair Display", serif;
   font-weight: 500;
   color: #000;
+}
+
+.filter-effects {
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  font-size: 1.2em;
+  color: #333;
+  text-align: center;
 }
 
 a {
