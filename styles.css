@@ -1,27 +1,63 @@
-.pink-button {
+.container a {
+  background-color: #cccccc;
+}
+
+.pink-button,
+.nav-button {
+  margin: 10px auto;
+  display: block;
   background-color: pink;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+  text-align: center;
 }
 
 .pink-button:hover {
   background-color: lightpink;
 }
 
+.nav-button {
+  background-color: #cccccc;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  display: inline-block;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #ff85c4;
+}
+
 #video-container {
   position: relative;
-  width: 100%;
-  max-width: 640px;
+  width: 640px;
+  height: 480px;
   margin: 0 auto;
+  /*width: 100%;
+  max-width: 640px;*/
 }
 
 video,
 canvas {
   width: 100%;
-  height: auto;
+  height: 100%;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  background-color: #000;
+}
+
+.canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 canvas {
@@ -48,6 +84,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 
 h1 {
@@ -57,6 +94,11 @@ h1 {
   color: #1a1a1a;
   margin-bottom: 20px;
   text-align: center;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
 }
 
 p {

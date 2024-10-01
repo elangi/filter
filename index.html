@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera Access with Filter</title>
-    <link rel="stylesheet" href="styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Filtered Face Installation</title>
+    <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-    <script src="script.js"></script>
-</head>
-<body>
-    <h1>Filtered Face Installation</h1>
-    <div id="video-container">
+  </head>
+  <body>
+    <div class="container">
+      <h1>FILTERED FACE INSTALLATION</h1>
+      <div id="video-container">
         <video id="video" autoplay muted></video>
         <canvas id="overlay"></canvas>
+      </div>
+      <button id="toggleFilter" class="pink-button">Toggle Filter</button>
+      <br />
+      <h2><strong>What is the filter doing to my face?</strong></h2>
+      <a href="answer.html" id="answerNAV" class="nav-button">Answer</a>
     </div>
-    <button id="toggleFilter" class="pink-button">Toggle Filter</button>
-    <br>
-    <p>What is the filter doing to my face?</p>
-    <a href="answer.html">Answer</a>
-
-
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
