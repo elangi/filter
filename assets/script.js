@@ -5,9 +5,9 @@ let filterActive = false;
 
 // Load face-api.js models
 Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-  faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+  faceapi.nets.tinyFaceDetector.loadFromUri("/models/dist"),
+  faceapi.nets.faceLandmark68Net.loadFromUri("/models/dist"),
+  faceapi.nets.faceRecognitionNet.loadFromUri("/models/dist"),
 ]).then(startVideo);
 
 function startVideo() {
