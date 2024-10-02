@@ -26,29 +26,43 @@ function adjustCanvasSize(video, canvas) {
   console.log(`Canvas adjusted to: ${canvas.width}x${canvas.height}`);
 }
 
-function manipulateFace(landmarks) {
+// Manipulate facial features based on landmarks
+function manipulateFace(landmarks, ctx, displaySize) {
+  // Clear the previous drawing
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
   // Get specific facial landmarks
   const leftEye = landmarks.getLeftEye();
   const rightEye = landmarks.getRightEye();
   const nose = landmarks.getNose();
+  const faceOutline = landmarks.getJawOutline();
 
-  // Alter the positions of landmarks to modify facial features:
-  // Example: Move left and right eye outward slightly to 'enlarge' the eyes
+  const leftEyeWidth = Math.abs(leftEye[3].x - leftEye[0].x);
+  const rightEyeWidth = Math.abs(rightEye[3].x - rightEye[0].x);
+
+  // Dynamically adjust nose coordinates to narrow the nose bridge
+  const centerX = (nose[0].x + nose[6].x) / 2; // Find the center of the nose
+
+  // Adjust nose bridge landmarks (move them towards the centerX to narrow the nose)
+  const narrowedNose = nose.map((point, index) => {
+    if (index >= 0 && index <= 3) {
+      // These points represent the top of the nose bridge, closer to the eyes
+      return { x: point.x * 0.9 + centerX * 0.1, y: point.y }; // Move points towards the center by reducing x
+    }
+    return point; // Don't alter points at the bottom of the nose
+  });
+
+  // Modify left and right eyes (enlarge by adjusting width)
   leftEye.forEach((point) => {
-    point.x -= 5; // Shift left eye landmarks left
+    point.x -= leftEyeWidth * 0.2; // Move left eye points outward
   });
 
   rightEye.forEach((point) => {
-    point.x += 5; // Shift right eye landmarks right
+    point.x += rightEyeWidth * 0.2; // Move right eye points outward
   });
 
-  // Example: Adjust the nose by narrowing the x coordinates of the nose points
-  nose.forEach((point) => {
-    point.x *= 0.95; // Slightly move nose points inward to narrow the nose
-  });
-}
- // Example: apply smoothing effect over the whole face (you can adjust the region)
-  ctx.save(); //save current canvas
+  // Example: apply a smoothing/blur effect over the whole face (you can adjust the region)
+  ctx.save(); // Save current canvas state
   ctx.beginPath();
   faceOutline.forEach((point) => ctx.lineTo(point.x, point.y));
   ctx.clip();
@@ -83,7 +97,7 @@ function runFaceDetection(video, canvas) {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas if no detection or filter is off
       }
     }
-  }, 100);
+  }, 50); // Adjusted the interval to 50ms for smoother results
 }
 
 // Toggle the filter effect
