@@ -106,8 +106,8 @@ window.addEventListener("load", async () => {
       adjustCanvasSize(video, canvas);
       runFaceDetection(video, canvas);
     }
+
+    console.log(`Video size: ${video.videoWidth}x${video.videoHeight}`);
+    console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
   });
 });
-
-console.log(`Video size: ${video.videoWidth}x${video.videoHeight}`);
-console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
