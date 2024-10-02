@@ -16,7 +16,7 @@ async function startVideo() {
 // Manipulate facial features based on landmarks
 function manipulateFace(landmarks, ctx, displaySize) {
   // Clear the previous drawing
-  ctx.clearRect(0, 0, displaySize.width, displaySize.height);
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   // Get specific facial landmarks
   const leftEye = landmarks.getLeftEye();
@@ -46,7 +46,7 @@ function manipulateFace(landmarks, ctx, displaySize) {
 
 // Run face detection and apply filter
 function runFaceDetection(video, canvas) {
-  const displaySize = { width: video.width, height: video.height };
+  const displaySize = { width: video.videoWidth, height: video.videoHeight };
   faceapi.matchDimensions(canvas, displaySize);
 
   setInterval(async () => {
@@ -76,5 +76,11 @@ window.addEventListener("load", async () => {
 
   const video = document.getElementById("video");
   const canvas = document.getElementById("overlay");
-  runFaceDetection(video, canvas);
+
+  video.addEventListener("playing", () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    runFaceDetection(video, canvas);
+  });
 });
