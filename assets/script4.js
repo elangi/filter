@@ -1,4 +1,5 @@
 let filterActive = false;
+let smoothingInterval = 50; // Adjusting interval for smoother transitions
 
 // Load models for face detection and landmarks
 async function loadModels() {
@@ -28,17 +29,12 @@ function adjustCanvasSize(video, canvas) {
 
 // Manipulate facial features based on landmarks
 function manipulateFace(landmarks, ctx, displaySize) {
-  // Clear the previous drawing
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
   // Get specific facial landmarks
   const leftEye = landmarks.getLeftEye();
   const rightEye = landmarks.getRightEye();
   const nose = landmarks.getNose();
   const faceOutline = landmarks.getJawOutline();
-
-  const leftEyeWidth = Math.abs(leftEye[3].x - leftEye[0].x);
-  const rightEyeWidth = Math.abs(rightEye[3].x - rightEye[0].x);
+  const mouth = landmarks.getMouth(); // New: Get mouth landmarks
 
   // Dynamically adjust nose coordinates to narrow the nose bridge
   const centerX = (nose[0].x + nose[6].x) / 2; // Find the center of the nose
@@ -46,22 +42,60 @@ function manipulateFace(landmarks, ctx, displaySize) {
   // Adjust nose bridge landmarks (move them towards the centerX to narrow the nose)
   const narrowedNose = nose.map((point, index) => {
     if (index >= 0 && index <= 3) {
-      // These points represent the top of the nose bridge, closer to the eyes
-      return { x: point.x * 0.9 + centerX * 0.1, y: point.y }; // Move points towards the center by reducing x
+      return { x: point.x * 0.9 + centerX * 0.1, y: point.y }; // Move points towards the center
     }
     return point; // Don't alter points at the bottom of the nose
   });
 
-  // Modify left and right eyes (enlarge by adjusting width)
-  leftEye.forEach((point) => {
-    point.x -= leftEyeWidth * 0.2; // Move left eye points outward
+  // Draw enlarged and elongated eyes (longer in length and width)
+  const leftEyeWidth = Math.abs(leftEye[3].x - leftEye[0].x);
+  const rightEyeWidth = Math.abs(rightEye[3].x - rightEye[0].x);
+
+  ctx.beginPath();
+  ctx.ellipse(
+    leftEye[0].x,
+    leftEye[0].y,
+    leftEyeWidth * 1.5, // width expansion
+    leftEyeWidth * 1.2, // also make them longer
+    0,
+    0,
+    2 * Math.PI
+  );
+  ctx.ellipse(
+    rightEye[0].x,
+    rightEye[0].y,
+    rightEyeWidth * 1.5,
+    rightEyeWidth * 1.2,
+    0,
+    0,
+    2 * Math.PI
+  );
+  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+  ctx.fill();
+
+  // Widen the lips
+  const leftMouthCorner = mouth[0];
+  const rightMouthCorner = mouth[6];
+  const mouthCenterX = (leftMouthCorner.x + rightMouthCorner.x) / 2;
+
+  const widenedMouth = mouth.map((point, index) => {
+    if (index === 0 || index === 6) {
+      return { x: point.x + (point.x - mouthCenterX) * 0.2, y: point.y }; // Widen mouth by adjusting corners
+    }
+    return point;
   });
 
-  rightEye.forEach((point) => {
-    point.x += rightEyeWidth * 0.2; // Move right eye points outward
-  });
+  // Draw the widened lips
+  ctx.beginPath();
+  ctx.moveTo(widenedMouth[0].x, widenedMouth[0].y);
+  for (let i = 1; i < widenedMouth.length; i++) {
+    ctx.lineTo(widenedMouth[i].x, widenedMouth[i].y);
+  }
+  ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
 
-  // Example: apply a smoothing/blur effect over the whole face (you can adjust the region)
+  // Apply a smoothing effect (blur) over the face
   ctx.save(); // Save current canvas state
   ctx.beginPath();
   faceOutline.forEach((point) => ctx.lineTo(point.x, point.y));
@@ -90,11 +124,14 @@ function runFaceDetection(video, canvas) {
       const resizedDetections = faceapi.resizeResults(detections, displaySize);
 
       const ctx = canvas.getContext("2d");
+
       if (resizedDetections.length > 0 && filterActive) {
+        // Only apply the filter when it's active and detections are present
         const landmarks = resizedDetections[0].landmarks;
         manipulateFace(landmarks, ctx, displaySize);
-      } else {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas if no detection or filter is off
+      } else if (!filterActive) {
+        // Clear the canvas only when the filter is inactive
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     }
   }, 50); // Adjusted the interval to 50ms for smoother results
