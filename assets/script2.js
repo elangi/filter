@@ -9,8 +9,12 @@ async function loadModels() {
 // Start video feed
 async function startVideo() {
   const video = document.getElementById("video");
-  const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
-  video.srcObject = stream;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+    video.srcObject = stream;
+  } catch (error) {
+    console.error("Error accessing the camera: ", error);
+  }
 }
 
 // Manipulate facial features based on landmarks
@@ -50,17 +54,25 @@ function runFaceDetection(video, canvas) {
   faceapi.matchDimensions(canvas, displaySize);
 
   setInterval(async () => {
-    const detections = await faceapi
-      .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
-      .withFaceLandmarks();
-    const resizedDetections = faceapi.resizeResults(detections, displaySize);
+    if (video.videoWidth > 0 && video.videoHeight > 0) {
+      const displaySize = {
+        width: video.videoWidth,
+        height: video.videoHeight,
+      };
+      faceapi.matchDimensions(canvas, displaySize);
 
-    const ctx = canvas.getContext("2d");
-    if (resizedDetections.length > 0 && filterActive) {
-      const landmarks = resizedDetections[0].landmarks;
-      manipulateFace(landmarks, ctx, displaySize);
-    } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas if no detection or filter is off
+      const detections = await faceapi
+        .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+        .withFaceLandmarks();
+      const resizedDetections = faceapi.resizeResults(detections, displaySize);
+
+      const ctx = canvas.getContext("2d");
+      if (resizedDetections.length > 0 && filterActive) {
+        const landmarks = resizedDetections[0].landmarks;
+        manipulateFace(landmarks, ctx, displaySize);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas if no detection or filter is off
+      }
     }
   }, 100);
 }
@@ -81,6 +93,8 @@ window.addEventListener("load", async () => {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    runFaceDetection(video, canvas);
+    if (canvas.width > 0 && canvas.height > 0) {
+      runFaceDetection(video, canvas);
+    }
   });
 });
