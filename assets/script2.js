@@ -2,8 +2,8 @@ let filterActive = false;
 
 // Load models for face detection and landmarks
 async function loadModels() {
-  await faceapi.nets.tinyFaceDetector.loadFromUri("/models/weights");
-  await faceapi.nets.faceLandmark68Net.loadFromUri("/models/weights");
+  await faceapi.nets.tinyFaceDetector.loadFromUri("models/weights");
+  await faceapi.nets.faceLandmark68Net.loadFromUri("models/weights");
 }
 
 // Start video feed
