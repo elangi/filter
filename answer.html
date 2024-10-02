@@ -10,9 +10,17 @@
     />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
-  <body>
+  <body
+    style="
+      background-image: url('assets/img/selfie.jpeg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    "
+  >
     <div class="container">
       <h1>ANSWER:</h1>
+
       <div class="filter-effects">
         <p>Eyes and lips slightly bigger</p>
         <p>Clearing blemishes, smoothing skin</p>
@@ -67,11 +75,12 @@
       <div class="qr-section">
         <h2><strong>How did it feel to see your filtered face?</strong></h2>
         <p>If you are aged 18-30, please scan the QR code:</p>
-        <img src="assets/img/QRCode.jpg" alt="QR Code" class="qr-image" />
-        <!--img
-          src="https://api.qrserver.com/v1/create-qr-code/?data=YourTextHere&size=200x200"
+        <img
+          src="assets/img/QRCode.jpg"
           alt="QR Code"
-        /-->
+          class="qr-image"
+          style="width: 100px; height: auto"
+        />
       </div>
       <a href="index.html">Go Back to Camera Page</a>
     </div>

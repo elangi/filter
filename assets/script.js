@@ -10,26 +10,26 @@ Promise.all([
   faceapi.nets.faceRecognitionNet.loadFromUri("/models/dist"),
 ]).then(startVideo);
 
-function startVideo() {
-  navigator.mediaDevices
-    .getUserMedia({
+// Start the video stream
+async function startVideo() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: "user",
         width: { ideal: 1280 },
         height: { ideal: 720 },
       },
-    })
-    .then((stream) => {
-      video.srcObject = stream;
-      video.play();
-    })
-    .catch((err) => {
-      console.error("Error accessing the camera: ", err);
     });
+    video.srcObject = stream;
+    await video.play();
+  } catch (err) {
+    console.error("Error accessing the camera:", err.name, err.message);
+  }
 }
 
+// Event listener for when the video plays
 video.addEventListener("play", () => {
-  const displaySize = { width: video.width, height: video.height };
+  const displaySize = { width: video.videoWidth, height: video.videoHeight };
   faceapi.matchDimensions(overlay, displaySize);
 
   setInterval(async () => {
@@ -46,6 +46,7 @@ video.addEventListener("play", () => {
   }, 100);
 });
 
+// Apply filter to the face
 function applyFilter(detections) {
   detections.forEach((detection) => {
     const landmarks = detection.landmarks;
@@ -80,42 +81,8 @@ function applyFilter(detections) {
   });
 }
 
+// Toggle the filter
 toggleButton.addEventListener("click", () => {
   filterActive = !filterActive;
   toggleButton.textContent = filterActive ? "Disable Filter" : "Enable Filter";
 });
-
-//error handling
-function startVideo() {
-  navigator.mediaDevices
-    .getUserMedia({
-      video: {
-        facingMode: "user",
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
-      },
-    })
-    .then((stream) => {
-      video.srcObject = stream;
-      video.play();
-    })
-    .catch((err) => {
-      console.error("Error accessing the camera:", err.name, err.message);
-    });
-}
-
-async function startVideo() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: "user",
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
-      },
-    });
-    video.srcObject = stream;
-    await video.play();
-  } catch (err) {
-    console.error("Error accessing the camera:", err.name, err.message);
-  }
-}
