@@ -70,7 +70,6 @@ function manipulateFace(landmarks, ctx, displaySize) {
     0,
     2 * Math.PI
   );
-  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
   ctx.fill();
 
   // Widen the lips
