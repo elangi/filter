@@ -10,12 +10,20 @@ async function loadModels() {
 async function startVideo() {
   const video = document.getElementById("video");
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: 640, height: 480 },
+    });
     video.srcObject = stream;
     console.log("Video stream started successfully");
   } catch (error) {
     console.error("Error accessing the camera: ", error);
   }
+}
+
+function adjustCanvasSize(video, canvas) {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  console.log(`Canvas adjusted to: ${canvas.width}x${canvas.height}`);
 }
 
 // Manipulate facial features based on landmarks
@@ -95,7 +103,11 @@ window.addEventListener("load", async () => {
     canvas.height = video.videoHeight;
 
     if (canvas.width > 0 && canvas.height > 0) {
+      adjustCanvasSize(video, canvas);
       runFaceDetection(video, canvas);
     }
   });
 });
+
+console.log(`Video size: ${video.videoWidth}x${video.videoHeight}`);
+console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
