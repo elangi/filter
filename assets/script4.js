@@ -200,7 +200,9 @@ function runFaceDetection(video, canvas) {
       const detections = await faceapi
         .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
         .withFaceLandmarks();
+      console.log("Detections: ", detections);
       const resizedDetections = faceapi.resizeResults(detections, displaySize);
+      console.log("Resized Detections: ", resizedDetections);
 
       const ctx = canvas.getContext("2d");
 
@@ -208,6 +210,7 @@ function runFaceDetection(video, canvas) {
         // Only apply the filter when it's active and detections are present
         const landmarks = resizedDetections[0].landmarks;
         manipulateFace(landmarks, ctx, displaySize);
+        console.log("Landmarks: ", landmarks);
       } else if (!filterActive) {
         // Clear the canvas only when the filter is inactive
         ctx.clearRect(0, 0, canvas.width, canvas.height);
