@@ -70,13 +70,13 @@ function manipulateFace(landmarks, ctx, displaySize) {
   const lipEnhanceFactor = 1.2; // Control lip enhancement
 
   const modifiedUpperLip = upperLip.map((point) => ({
-    x: point.x * lipEnhanceFactor,
-    y: point.y * lipEnhanceFactor,
+    x: (point.x - upperLip[3].x) * lipEnhanceFactor + upperLip[3].x, // Scale relative to the center
+    y: (point.y - upperLip[3].y) * lipEnhanceFactor + upperLip[3].y,
   }));
 
   const modifiedLowerLip = lowerLip.map((point) => ({
-    x: point.x * lipEnhanceFactor,
-    y: point.y * lipEnhanceFactor,
+    x: (point.x - lowerLip[3].x) * lipEnhanceFactor + lowerLip[3].x, // Scale relative to the center
+    y: (point.y - lowerLip[3].y) * lipEnhanceFactor + lowerLip[3].y,
   }));
 
   // Use the manipulated eye points but without rendering anything visible
@@ -128,63 +128,6 @@ function manipulateFace(landmarks, ctx, displaySize) {
   ctx.drawImage(video, 0, 0, displaySize.width, displaySize.height);
   ctx.restore();
 }
-
-/* Draw enlarged and elongated eyes (longer in length and width)
-  const leftEyeWidth = Math.abs(leftEye[3].x - leftEye[0].x);
-  const rightEyeWidth = Math.abs(rightEye[3].x - rightEye[0].x);
-
-  ctx.beginPath();
-  ctx.ellipse(
-    leftEye[0].x,
-    leftEye[0].y,
-    leftEyeWidth * 1.5, // width expansion
-    leftEyeWidth * 1.2, // also make them longer
-    0,
-    0,
-    2 * Math.PI
-  );
-  ctx.ellipse(
-    rightEye[0].x,
-    rightEye[0].y,
-    rightEyeWidth * 1.5,
-    rightEyeWidth * 1.2,
-    0,
-    0,
-    2 * Math.PI
-  );
-  ctx.fill();
-
-  // Widen the lips
-  const leftMouthCorner = mouth[0];
-  const rightMouthCorner = mouth[6];
-  const mouthCenterX = (leftMouthCorner.x + rightMouthCorner.x) / 2;
-
-  const widenedMouth = mouth.map((point, index) => {
-    if (index === 0 || index === 6) {
-      return { x: point.x + (point.x - mouthCenterX) * 0.2, y: point.y }; // Widen mouth by adjusting corners
-    }
-    return point;
-  });
-
-  // Draw the widened lips
-  ctx.beginPath();
-  ctx.moveTo(widenedMouth[0].x, widenedMouth[0].y);
-  for (let i = 1; i < widenedMouth.length; i++) {
-    ctx.lineTo(widenedMouth[i].x, widenedMouth[i].y);
-  }
-  ctx.strokeStyle = "rgba(0, 0, 0, 0.5)";
-  ctx.lineWidth = 1;
-  ctx.stroke();
-
-  // Apply a smoothing effect (blur) over the face
-  ctx.save(); // Save current canvas state
-  ctx.beginPath();
-  faceOutline.forEach((point) => ctx.lineTo(point.x, point.y));
-  ctx.clip();
-  ctx.filter = "blur(2px)"; // Apply a blur filter to simulate skin clearing
-  ctx.drawImage(video, 0, 0, displaySize.width, displaySize.height);
-  ctx.restore();
-}**/
 
 // Run face detection and apply filter
 function runFaceDetection(video, canvas) {
