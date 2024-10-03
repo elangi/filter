@@ -126,8 +126,8 @@ function manipulateFace(landmarks, ctx, displaySize) {
   ctx.drawImage(video, 0, 0, displaySize.width, displaySize.height);
   ctx.restore();
 }
-  
-  /* Draw enlarged and elongated eyes (longer in length and width)
+
+/* Draw enlarged and elongated eyes (longer in length and width)
   const leftEyeWidth = Math.abs(leftEye[3].x - leftEye[0].x);
   const rightEyeWidth = Math.abs(rightEye[3].x - rightEye[0].x);
 
@@ -182,7 +182,7 @@ function manipulateFace(landmarks, ctx, displaySize) {
   ctx.filter = "blur(2px)"; // Apply a blur filter to simulate skin clearing
   ctx.drawImage(video, 0, 0, displaySize.width, displaySize.height);
   ctx.restore();
-}
+}**/
 
 // Run face detection and apply filter
 function runFaceDetection(video, canvas) {
