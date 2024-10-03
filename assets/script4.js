@@ -36,9 +36,11 @@ function manipulateFace(landmarks, ctx, displaySize) {
   const rightEye = landmarks.getRightEye();
   const nose = landmarks.getNose();
   const faceOutline = landmarks.getJawOutline();
-  const upperLip = landmarks.getMouthUpperLip();
-  const lowerLip = landmarks.getMouthLowerLip();
-  //const mouth = landmarks.getMouth(); // New: Get mouth landmarks
+  const mouth = landmarks.getMouth(); // Use getMouth() to get all mouth points
+
+  // Separate the upper and lower lips manually
+  const upperLip = mouth.slice(0, 7); // Points from 0 to 6 are the upper lip
+  const lowerLip = mouth.slice(6, 12); // Points from 6 to 11 are the lower lip
 
   // Dynamically adjust nose coordinates to narrow the nose bridge
   const centerX = (nose[0].x + nose[6].x) / 2; // Find the center of the nose
