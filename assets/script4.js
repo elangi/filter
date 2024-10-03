@@ -47,26 +47,30 @@ function landmarksChanged(currentLandmarks, previousLandmarks) {
 function manipulateFace(landmarks, ctx, displaySize) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-  // Get specific facial landmarks
-  const leftEye = landmarks.getLeftEye();
-  const rightEye = landmarks.getRightEye();
+  // Get specific facial landmarks directly using the positions array
+  const leftEye = landmarks.getEyeLeft();
+  const rightEye = landmarks.getEyeRight();
   const nose = landmarks.getNose();
   const faceOutline = landmarks.getJawOutline();
   const mouth = landmarks.getMouth();
 
-  const upperLip = mouth.slice(0, 7);
-  const lowerLip = mouth.slice(6, 12);
+  // Separate the upper and lower lips manually
+  const upperLip = mouth.slice(0, 7); // Points from 0 to 6 are the upper lip
+  const lowerLip = mouth.slice(6, 12); // Points from 6 to 11 are the lower lip
 
-  const centerX = (nose[0].x + nose[6].x) / 2;
+  // Dynamically adjust nose coordinates to narrow the nose bridge
+  const centerX = (nose[0].x + nose[6].x) / 2; // Find the center of the nose
 
+  // Adjust nose bridge landmarks (move them towards the centerX to narrow the nose)
   const narrowedNose = nose.map((point, index) => {
     if (index >= 0 && index <= 3) {
-      return { x: point.x * 0.9 + centerX * 0.1, y: point.y };
+      return { x: point.x * 0.9 + centerX * 0.1, y: point.y }; // Move points towards the center
     }
-    return point;
+    return point; // Don't alter points at the bottom of the nose
   });
 
-  const enlargeFactor = 1.3;
+  // Manipulate eye landmarks to "enlarge" eyes
+  const enlargeFactor = 1.3; // Control how much to adjust eye size
 
   const modifiedLeftEye = leftEye.map((point) => ({
     x: point.x * enlargeFactor,
@@ -78,52 +82,65 @@ function manipulateFace(landmarks, ctx, displaySize) {
     y: point.y * enlargeFactor,
   }));
 
-  const lipEnhanceFactor = 1.2;
+  // Manipulate lips to make them plumper
+  const lipEnhanceFactor = 1.2; // Control lip enhancement
 
   const modifiedUpperLip = upperLip.map((point) => ({
-    x: (point.x - upperLip[3].x) * lipEnhanceFactor + upperLip[3].x,
+    x: (point.x - upperLip[3].x) * lipEnhanceFactor + upperLip[3].x, // Scale relative to the center
     y: (point.y - upperLip[3].y) * lipEnhanceFactor + upperLip[3].y,
   }));
 
   const modifiedLowerLip = lowerLip.map((point) => ({
-    x: (point.x - lowerLip[3].x) * lipEnhanceFactor + lowerLip[3].x,
+    x: (point.x - lowerLip[3].x) * lipEnhanceFactor + lowerLip[3].x, // Scale relative to the center
     y: (point.y - lowerLip[3].y) * lipEnhanceFactor + lowerLip[3].y,
   }));
 
+  // Use the manipulated eye points but without rendering anything visible
   ctx.beginPath();
-  modifiedLeftEye.forEach((point) => ctx.lineTo(point.x, point.y));
-  ctx.lineWidth = 0;
+  modifiedLeftEye.forEach((point) => {
+    ctx.lineTo(point.x, point.y);
+  });
+  ctx.lineWidth = 0; // No visible drawing
   ctx.stroke();
 
   ctx.beginPath();
-  modifiedRightEye.forEach((point) => ctx.lineTo(point.x, point.y));
-  ctx.lineWidth = 0;
+  modifiedRightEye.forEach((point) => {
+    ctx.lineTo(point.x, point.y);
+  });
+  ctx.lineWidth = 0; // No visible drawing
+  ctx.stroke();
+
+  // Adjust the lips without drawing
+  ctx.beginPath();
+  modifiedUpperLip.forEach((point) => {
+    ctx.lineTo(point.x, point.y);
+  });
+  ctx.lineWidth = 0; // No visible drawing
   ctx.stroke();
 
   ctx.beginPath();
-  modifiedUpperLip.forEach((point) => ctx.lineTo(point.x, point.y));
-  ctx.lineWidth = 0;
+  modifiedLowerLip.forEach((point) => {
+    ctx.lineTo(point.x, point.y);
+  });
+  ctx.lineWidth = 0; // No visible drawing
   ctx.stroke();
 
-  ctx.beginPath();
-  modifiedLowerLip.forEach((point) => ctx.lineTo(point.x, point.y));
-  ctx.lineWidth = 0;
-  ctx.stroke();
-
+  // Draw the nose with modified landmarks (invisible path)
   ctx.beginPath();
   ctx.moveTo(narrowedNose[0].x, narrowedNose[0].y);
   for (let i = 1; i < narrowedNose.length; i++) {
     ctx.lineTo(narrowedNose[i].x, narrowedNose[i].y);
   }
-  ctx.strokeStyle = "rgba(0, 0, 0, 0)";
+  ctx.strokeStyle = "rgba(0, 0, 0, 0)"; // No visible drawing
   ctx.lineWidth = 0;
   ctx.stroke();
 
-  ctx.save();
+  // Example: apply smoothing effect over the whole face (you can adjust the region)
+  ctx.save(); // Save current canvas state
   ctx.beginPath();
   faceOutline.forEach((point) => ctx.lineTo(point.x, point.y));
   ctx.clip();
-  ctx.filter = "blur(2px)";
+  ctx.filter = "blur(2px)"; // Apply a blur filter to simulate skin clearing
   ctx.drawImage(video, 0, 0, displaySize.width, displaySize.height);
   ctx.restore();
 }
