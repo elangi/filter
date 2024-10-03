@@ -37,17 +37,17 @@
 
 #video-container {
   position: relative;
-  width: 640px;
+  /*width: 640px;*/
   height: 480px;
   margin: 0 auto;
-  /*width: 100%;
-  max-width: 640px;*/
+  width: 100%;
+  max-width: 640px;
 }
 
 video,
 canvas {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
   margin: 0 auto;
   border-radius: 10px;
@@ -217,11 +217,21 @@ img {
 
 @media (max-width: 768px) {
   h1 {
-    font-size: 2em;
+    font-size: 1.8em;
   }
 
   p,
   ul li {
     font-size: 1em;
+  }
+
+  .pink-button,
+  .nav-button {
+    font-size: 14px;
+  }
+
+  #video-container {
+    width: 100%; /* Full width on mobile */
+    height: auto;
   }
 }
