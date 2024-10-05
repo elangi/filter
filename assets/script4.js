@@ -52,11 +52,11 @@ function manipulateFace(landmarks, ctx, displaySize) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   // Get specific facial landmarks directly using the positions array
-  const leftEye = landmarks.getEyeLeft();
-  const rightEye = landmarks.getEyeRight();
-  const nose = landmarks.getNose();
-  const faceOutline = landmarks.getJawOutline();
-  const mouth = landmarks.getMouth();
+  const leftEye = landmarks.slice(36, 42);
+  const rightEye = landmarks.slice(42, 48);
+  const nose = landmarks.slice(27, 36);
+  const faceOutline = landmarks.slice(0, 17);
+  const mouth = landmarks.slice(48, 68);
 
   // Separate the upper and lower lips manually
   const upperLip = mouth.slice(0, 7); // Points from 0 to 6 are the upper lip
