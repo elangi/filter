@@ -47,6 +47,17 @@ function landmarksChanged(currentLandmarks, previousLandmarks) {
   return false;
 }
 
+// Define the blur function to handle blemish-prone regions
+function applyLocalizedBlur(region, ctx, video, displaySize) {
+  ctx.save(); // Save the current canvas state
+  ctx.beginPath();
+  region.forEach((point) => ctx.lineTo(point.x, point.y)); // Create a path around the region
+  ctx.clip(); // Clip the specific region to limit the blur effect
+  ctx.filter = "blur(3px)"; // Apply slight blur to clear blemishes
+  ctx.drawImage(video, 0, 0, displaySize.width, displaySize.height); // Redraw video with blur applied to the clipped region
+  ctx.restore(); // Restore the canvas to prevent further blurring
+}
+
 // Manipulate facial features based on landmarks
 function manipulateFace(landmarks, ctx, displaySize) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -55,8 +66,12 @@ function manipulateFace(landmarks, ctx, displaySize) {
   const leftEye = landmarks.slice(36, 42);
   const rightEye = landmarks.slice(42, 48);
   const nose = landmarks.slice(27, 36);
-  const faceOutline = landmarks.slice(0, 17);
   const mouth = landmarks.slice(48, 68);
+  const faceOutline = landmarks.slice(0, 17);
+  const leftCheek = landmarks.slice(1, 6);
+  const rightCheek = landmarks.slice(11, 16);
+  const forehead = [landmarks[19], landmarks[24]];
+  const chin = [landmarks[8]];
 
   // Separate the upper and lower lips manually
   const upperLip = mouth.slice(0, 7); // Points from 0 to 6 are the upper lip
@@ -139,14 +154,21 @@ function manipulateFace(landmarks, ctx, displaySize) {
   ctx.lineWidth = 0;
   ctx.stroke();
 
-  // Example: apply smoothing effect over the whole face (you can adjust the region)
+  // Apply blur to blemish-prone areas
+  applyLocalizedBlur(leftCheek, ctx, video, displaySize);
+  applyLocalizedBlur(rightCheek, ctx, video, displaySize);
+  applyLocalizedBlur(nose, ctx, video, displaySize);
+  applyLocalizedBlur(forehead, ctx, video, displaySize);
+  applyLocalizedBlur(chin, ctx, video, displaySize);
+
+  /* Example: apply smoothing effect over the whole face (you can adjust the region)
   ctx.save(); // Save current canvas state
   ctx.beginPath();
   faceOutline.forEach((point) => ctx.lineTo(point.x, point.y));
   ctx.clip();
   ctx.filter = "blur(2px)"; // Apply a blur filter to simulate skin clearing
   ctx.drawImage(video, 0, 0, displaySize.width, displaySize.height);
-  ctx.restore();
+  ctx.restore();*/
 }
 
 // Run face detection and apply filter
