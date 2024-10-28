@@ -40,6 +40,7 @@
   /*width: 640px;*/
   height: auto;
   margin: 0 auto 20px;
+  overflow: hidden;
   width: 100%;
   max-width: 640px;
   aspect-ratio: 16/9;
@@ -53,6 +54,7 @@ canvas {
   margin: 0 auto;
   border-radius: 10px;
   z-index: 1;
+  object-fit: cover;
 }
 
 .canvas-container {
