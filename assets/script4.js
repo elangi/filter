@@ -1,6 +1,6 @@
 let filterActive = false;
-let previousLandmarks = null; // To store previous landmarks for comparison
-let smoothingInterval = 50; // Adjusting interval for smoother transitions
+let previousLandmarks = null;
+let smoothingInterval = 50;
 
 // Load models for face detection and landmarks
 async function loadModels() {
