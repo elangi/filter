@@ -1,134 +1,87 @@
-// Select elements
-const videoElement = document.getElementById("video");
-const canvasElement = document.getElementById("overlay");
-const toggleFilterButton = document.getElementById("toggleFilter");
-const canvasCtx = canvasElement.getContext("2d");
-let filterActive = false;
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-// Initialize MediaPipe FaceMesh
-const faceMesh = new FaceMesh({
-  locateFile: (file) =>
-    `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
-});
-faceMesh.setOptions({
-  maxNumFaces: 1,
-  refineLandmarks: true,
-  minDetectionConfidence: 0.5,
-  minTrackingConfidence: 0.5,
-});
-faceMesh.onResults(onResults);
+// Start video streaming
+navigator.mediaDevices
+  .getUserMedia({ video: true })
+  .then((stream) => {
+    video.srcObject = stream;
+  })
+  .catch((err) => console.error("Error accessing camera: ", err));
 
-const camera = new Camera(videoElement, {
-  onFrame: async () => {
-    await faceMesh.send({ image: videoElement });
-  },
-  width: 640,
-  height: 480,
-});
-camera.start();
+// Initialize tracking.js for face detection
+tracking.track("#video", new tracking.ObjectTracker("face"), { camera: true });
 
-toggleFilterButton.addEventListener("click", () => {
-  filterActive = !filterActive;
-});
+tracking.on("track", function (event) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+  if (event.data.length > 0) {
+    event.data.forEach(function (rect) {
+      // Draw a rectangle around the detected face
+      ctx.strokeStyle = "#00FF00"; // Green border
+      ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
 
-// Draw results onto the canvas
-function onResults(results) {
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-  // Draw the original feed
-  canvasCtx.drawImage(
-    results.image,
-    0,
-    0,
-    canvasElement.width,
-    canvasElement.height
-  );
-
-  if (!filterActive) return;
-
-  if (results.multiFaceLandmarks) {
-    results.multiFaceLandmarks.forEach((landmarks) => {
-      applyFaceTransformations(landmarks);
+      // Call adjustment functions
+      adjustFacialFeatures(rect);
     });
   }
+});
+
+function adjustFacialFeatures(faceRect) {
+  // Example adjustments based on detected face rectangle
+  slimNose(faceRect);
+  plumpLips(faceRect);
+  enlargeEyes(faceRect);
+  clearBlemishes(faceRect);
 }
 
-function applyFaceTransformations(landmarks) {
-  // Slim the nose bridge (key landmarks 6, 168 for top, 195, 5 for bottom of the nose)
-  canvasCtx.beginPath();
-  canvasCtx.moveTo(
-    landmarks[6].x * canvasElement.width,
-    landmarks[6].y * canvasElement.height
+function slimNose(faceRect) {
+  // Adjust nose position and size based on faceRect
+  ctx.drawImage(
+    video,
+    faceRect.x + 20,
+    faceRect.y + 50,
+    30,
+    60,
+    faceRect.x + 40,
+    faceRect.y + 40,
+    15,
+    40
   );
-  canvasCtx.lineTo(
-    landmarks[168].x * canvasElement.width,
-    landmarks[168].y * canvasElement.height
-  );
-  canvasCtx.lineTo(
-    landmarks[195].x * canvasElement.width,
-    landmarks[195].y * canvasElement.height
-  );
-  canvasCtx.lineTo(
-    landmarks[5].x * canvasElement.width,
-    landmarks[5].y * canvasElement.height
-  );
-  canvasCtx.closePath();
-  canvasCtx.fillStyle = "rgba(255, 235, 235, 0.8)"; // Adjust color to match skin tone
-  canvasCtx.fill();
+}
 
-  // Plump the lips by spreading outer lip areas (landmarks 78, 308 for outer points)
-  const lipXOffset = 5; // Offset to "plump" the lips
-  const lipYOffset = 2;
-  canvasCtx.beginPath();
-  canvasCtx.moveTo(
-    landmarks[78].x * canvasElement.width - lipXOffset,
-    landmarks[78].y * canvasElement.height + lipYOffset
+function plumpLips(faceRect) {
+  // Adjust lip position and size based on faceRect
+  ctx.drawImage(
+    video,
+    faceRect.x + 20,
+    faceRect.y + 110,
+    80,
+    20,
+    faceRect.x + 10,
+    faceRect.y + 110,
+    100,
+    30
   );
-  canvasCtx.lineTo(
-    landmarks[308].x * canvasElement.width + lipXOffset,
-    landmarks[308].y * canvasElement.height + lipYOffset
-  );
-  canvasCtx.closePath();
-  canvasCtx.fillStyle = "rgba(255, 182, 193, 0.7)"; // Light pink tone for lips
-  canvasCtx.fill();
+}
 
-  // Enlarge eyes by expanding the outer eye areas (landmarks 33, 263 for outer corners)
-  const eyeXOffset = 3;
-  const eyeYOffset = 3;
-  canvasCtx.beginPath();
-  canvasCtx.ellipse(
-    landmarks[33].x * canvasElement.width,
-    landmarks[33].y * canvasElement.height,
-    eyeXOffset,
-    eyeYOffset,
-    0,
-    0,
-    2 * Math.PI
+function enlargeEyes(faceRect) {
+  // Adjust eye position and size based on faceRect
+  ctx.drawImage(
+    video,
+    faceRect.x + 10,
+    faceRect.y + 30,
+    50,
+    30,
+    faceRect.x,
+    faceRect.y + 30,
+    70,
+    50
   );
-  canvasCtx.ellipse(
-    landmarks[263].x * canvasElement.width,
-    landmarks[263].y * canvasElement.height,
-    eyeXOffset,
-    eyeYOffset,
-    0,
-    0,
-    2 * Math.PI
-  );
-  canvasCtx.fillStyle = "rgba(0, 0, 0, 0.2)"; // Darken edges for larger eye effect
-  canvasCtx.fill();
+}
 
-  // Clear blemishes by applying a smooth skin layer (averaging colors around landmarks 10, 338)
-  const blemishRadius = 6;
-  canvasCtx.globalAlpha = 0.6;
-  canvasCtx.beginPath();
-  canvasCtx.arc(
-    landmarks[10].x * canvasElement.width,
-    landmarks[10].y * canvasElement.height,
-    blemishRadius,
-    0,
-    2 * Math.PI
-  );
-  canvasCtx.fillStyle = "rgba(255, 224, 189, 0.5)"; // Adjust to approximate skin tone
-  canvasCtx.fill();
-  canvasCtx.globalAlpha = 1.0;
+function clearBlemishes(faceRect) {
+  // Example blemish removal based on faceRect
+  ctx.fillStyle = "rgba(255, 255, 255, 0.8)"; // Light color to cover blemishes
+  ctx.fillRect(faceRect.x + 30, faceRect.y + 80, 50, 50); // Example blemish area
 }
