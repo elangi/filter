@@ -12,8 +12,8 @@ startVideo();
 
 // Load face-api.js models
 Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri("/models/dist"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("/models/dist"),
+  faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+  faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
 ]).then(() => {
   video.addEventListener("play", () => {
     // Set canvas dimensions to video dimensions
@@ -31,10 +31,13 @@ Promise.all([
 
         // Slim nose
         adjustNose(landmarks);
+
         // Plump lips
         adjustLips(landmarks);
+
         // Enlarge eyes
         adjustEyes(landmarks);
+
         // Clear blemishes
         clearBlemishes(detection.detection.box);
       });
