@@ -13,16 +13,23 @@ const camera = new THREE.PerspectiveCamera(
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Start video streaming
+// Start video feed
 async function startVideo() {
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  video.srcObject = stream;
-  video.addEventListener("loadeddata", () => {
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-  });
+  const video = document.getElementById("video");
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+        facingMode: "user",
+      },
+    });
+    video.srcObject = stream;
+    console.log("Video stream started successfully");
+  } catch (error) {
+    console.error("Error accessing the camera: ", error);
+  }
 }
-startVideo();
 
 // Load face-api.js models
 Promise.all([
