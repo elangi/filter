@@ -12,8 +12,8 @@ startVideo();
 
 // Load face-api.js models
 Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+  faceapi.nets.tinyFaceDetector.loadFromUri("/models/dist"),
+  faceapi.nets.faceLandmark68Net.loadFromUri("/models/dist"),
 ]).then(() => {
   video.addEventListener("play", () => {
     // Set canvas dimensions to video dimensions
