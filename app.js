@@ -1,5 +1,5 @@
 // Copyright (c) 2022 8th Wall, Inc.
-//import "./outer-website.css";
+import "./outer-website.css";
 
 console.log("app.js is running");
 
