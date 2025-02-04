@@ -1,6 +1,6 @@
 // Copyright (c) 2022 8th Wall, Inc.
 //
-import "/assets/outer-website.css";
+import "./outer-website.css";
 
 // The AR content to load in the iframe.
 const INNER_FRAME_URL = "https://8w.8thwall.app/inner-ar";
