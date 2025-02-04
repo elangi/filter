@@ -2,6 +2,8 @@
 //
 import "./outer-website.css";
 
+console.log("app.js is running");
+
 // The AR content to load in the iframe.
 const INNER_FRAME_URL = "https://8w.8thwall.app/inner-ar";
 
