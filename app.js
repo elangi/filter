@@ -144,10 +144,9 @@ const startAR = () => {
   iframe.setAttribute("src", INNER_FRAME_URL); // This is where the AR iframe's source is set.
 };
 
-// Set up.
+//** */ Set up.
 const onLoad = () => {
   createObserver(); // handles intersection observer behavior
-  dateCheck(); // sets today's date in the article
 };
 
 // Add event listeners and callbacks for the body DOM.
