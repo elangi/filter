@@ -13,9 +13,6 @@ const STOP_BTN_ID = "stopBtn"; // Button to stop AR.
 const EXPAND_BTN_ID = "expandBtn"; // Button to expand AR iframe to fill screen.
 const LOGO_ID = "poweredByLogo"; // Powered by 8th Wall logo
 
-// Other UI elements
-const DATE_ID = "date"; // Displays today's date in the article.
-
 // CSS classes for toggling appearance of elements when the iframe is full screen.
 const FULLSCREEN_IFRAME_CLASS = "fullscreen-iframe";
 const FULLSCREEN_CONTROLS_CLASS = "fullscreen-iframeControls";
@@ -89,17 +86,6 @@ const createObserver = () => {
   new IntersectionObserver(handleIntersect, options).observe(
     document.getElementById(IFRAME_ID)
   );
-};
-
-// Sets today's date in the article
-const dateCheck = () => {
-  const date = new Date();
-  document.getElementById(DATE_ID).innerHTML = `${date.toLocaleDateString(
-    "en-US",
-    { month: "long" }
-  )} ${date.toLocaleDateString("en-US", {
-    day: "numeric",
-  })}, ${date.toLocaleDateString("en-US", { year: "numeric" })}`;
 };
 
 // Handles fullscreen button behavior
