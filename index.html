@@ -27,35 +27,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.0/tracking-min.js"></script>
   </head>
   <body>
-    <div class="container">
-      <h1><strong>What is the filter doing to my face?</strong></h1>
-      <!--div id="video-container">
+    <!--div class="container"-->
+
+    <!--div id="video-container">
         <video id="video" autoplay muted></video>
         <canvas id="overlay"></canvas>
       </div-->
-      <!-- AR iframe -->
-      <div id="inline-ar">
-        <button id="startBtn" onClick="startAR()">
-          <img src="./assets/outer-website-assets/start-ar-banner.svg" />
+    <!-- AR iframe -->
+    <div id="inline-ar">
+      <h1><strong>What is the filter doing to my face?</strong></h1>
+      <button id="startBtn" onClick="startAR()">
+        <img src="./assets/outer-website-assets/start-ar-banner.svg" />
+      </button>
+      <div id="iframeControls">
+        <button id="expandBtn" onClick="toggleFullscreen()">
+          <div id="expandImg"></div>
         </button>
-        <div id="iframeControls">
-          <button id="expandBtn" onClick="toggleFullscreen()">
-            <div id="expandImg"></div>
-          </button>
-          <button id="stopBtn" onClick="stopAR()">
-            <div id="stopImg"></div>
-          </button>
-        </div>
-        <iframe
-          id="my-iframe"
-          allow="camera;gyroscope;accelerometer;magnetometer;xr-spatial-tracking;microphone;"
-        >
-        </iframe>
+        <button id="stopBtn" onClick="stopAR()">
+          <div id="stopImg"></div>
+        </button>
       </div>
-      <!--button id="toggleFilter" class="pink-button">Press Me</button>
-      <br /-->
+      <iframe
+        id="my-iframe"
+        allow="camera;gyroscope;accelerometer;magnetometer;xr-spatial-tracking;microphone;"
+      >
+      </iframe>
       <a href="answer.html" id="answerNAV" class="nav-button">Answer</a>
     </div>
+    <!--button id="toggleFilter" class="pink-button">Press Me</button>
+      <br /-->
+
+    <!--/div-->
     <script type="module" src="app.js"></script>
   </body>
 </html>
