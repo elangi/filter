@@ -11,6 +11,14 @@
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Montserrat:wght@300&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://fonts.googleapis.com/css?family=Noto+Serif:400,700,700i&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="assets/styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <!--script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh"></script>
@@ -23,6 +31,29 @@
       <div id="video-container">
         <video id="video" autoplay muted></video>
         <canvas id="overlay"></canvas>
+      </div>
+      <!-- AR iframe -->
+      <div id="inline-ar">
+        <button id="startBtn" onClick="startAR()">
+          <img src="./assets/outer-website-assets/start-ar-banner.svg" />
+        </button>
+        <img
+          id="poweredByLogo"
+          src="./assets/outer-website-assets/poweredby8thwall.svg"
+        />
+        <div id="iframeControls">
+          <button id="expandBtn" onClick="toggleFullscreen()">
+            <div id="expandImg"></div>
+          </button>
+          <button id="stopBtn" onClick="stopAR()">
+            <div id="stopImg"></div>
+          </button>
+        </div>
+        <iframe
+          id="my-iframe"
+          allow="camera;gyroscope;accelerometer;magnetometer;xr-spatial-tracking;microphone;"
+        >
+        </iframe>
       </div>
       <button id="toggleFilter" class="pink-button">Press Me</button>
       <br />
