@@ -3,7 +3,7 @@
 console.log("app.js is running");
 
 // The AR content to load in the iframe.
-const INNER_FRAME_URL = "https://8th.io/9vdzk";
+const INNER_FRAME_URL = "https://juliacoffey.8thwall.app/filtertest2/";
 
 // User control elements for the iframe AR experience.
 const IFRAME_ID = "my-iframe"; // iframe containing AR content.
