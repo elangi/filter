@@ -182,6 +182,24 @@ a:hover {
   display: block;
 }
 
+.center-container {
+  display: flex;
+  justify-content: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0;
+}
+
+.button-container a {
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
 .back-button {
   display: inline-block;
   padding: 10px 20px;
